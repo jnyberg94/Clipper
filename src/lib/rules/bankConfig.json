@@ -1,0 +1,26 @@
+{
+  "rbcUsd": {
+    "name": "RBC USD",
+    "fieldMappings": {
+      "date": "transactionDate",
+      "description": "CONCAT:description1,description2",
+      "amount": "EITHER:cad$,usd$",
+      "currency": "CONDITIONAL:cad$,CAD,USD",
+      "type": "AMOUNT_SIGN:EITHER:cad$,usd$",
+      "accountNumber": "accountNumber"
+    },
+    "dateFormat": "MM/DD/YYYY"
+  },
+  "loop": {
+    "name": "Loop",
+    "fieldMappings": {
+      "date": "transactionDate",
+      "description": "description",
+      "amount": "PARSE_CURRENCY:amount",
+      "currency": "currency",
+      "type": "TYPE_MAP:type,DEPOSIT=credit,WITHDRAWAL=debit,TRANSFER=debit",
+      "category": "category"
+    },
+    "dateFormat": "MMMM DD, YYYY"
+  }
+}
