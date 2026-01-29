@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   import { invoke } from "@tauri-apps/api/core";
 
   let name = $state("");
@@ -153,4 +153,4 @@ button {
   }
 }
 
-</style>
+</style> -->

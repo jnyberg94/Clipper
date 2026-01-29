@@ -4,9 +4,9 @@
     "fieldMappings": {
       "date": "transactionDate",
       "description": "CONCAT:description1,description2",
-      "amount": "EITHER:cad$,usd$",
-      "currency": "CONDITIONAL:cad$,CAD,USD",
-      "type": "AMOUNT_SIGN:EITHER:cad$,usd$",
+      "amount": "EITHER:CAD$,USD$",
+      "currency": "CONDITIONAL:CAD$,CAD,USD",
+      "type": "AMOUNT_SIGN:EITHER:CAD$,USD$",
       "accountNumber": "accountNumber"
     },
     "dateFormat": "MM/DD/YYYY"

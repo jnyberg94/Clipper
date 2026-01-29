@@ -4,7 +4,7 @@ import {
     exists,
     BaseDirectory,
 } from "@tauri-apps/plugin-fs";
-import defaultRules from "$lib/rules/defaultRules.json" with { type: 'json'};
+//import defaultRules from "../rules/defaultRules.json" with { type: 'json'}; //this is IMPORTANT for production version!
 
 export async function loadRules() {
     const fileName = "rules.json";

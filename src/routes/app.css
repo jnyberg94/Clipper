@@ -1,0 +1,223 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-1: #FAFAFA;
+  --bg-2: #F6F6F6;
+  --bg-3: #F2F2F2;
+  --bg-3: #EBEBEB;
+  --stroke: #E0E0E0;
+  --stroke-bright: #CDCDCD;
+  --subtext: #7D7D7D;
+  --text: #1A1A1A;
+  --button: #161618;
+  --success: #149610;
+  --success-bg: #D9F7D7;
+  --error: #EE2C2C;
+  --error-bg: #F7D7D8;
+  --active: #3A72FF;
+  --bg-active: #EBEFFA;
+  --warning: #F6C13C;
+  --bg-warning: #FFF2DD;
+  --purple: #673CF6;
+  --bg-purple: #E5DDFF;
+  
+
+  --transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+
+  --xxs: 4px;
+  --xs: 8px;
+  --sm: 12px;
+  --md: 16px;
+  --lg: 24px;
+  --xl: 32px;
+  --xxl: 48px;
+  --xxxl: 64px;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans_semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+h1,
+h2,
+h3 {
+  font-family: "DM Sans";
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 600;
+}
+
+
+h4,
+h5,
+h6,
+input,
+label,
+textarea,
+span,
+li {
+  font-family: "DM Sans";
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 400;
+}
+
+h1.plus {
+  font-size: 40px;
+  line-height: 115%;
+}
+
+h1 {
+  font-size: 32px;
+  letter-spacing: -2.5%;
+}
+
+h1.small {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 22px;
+}
+
+h3,
+input,
+textarea {
+  font-size: 17px;
+}
+
+h4,
+span,
+li {
+  font-size: 15px;
+}
+
+h5 {
+  font-size: 12px;
+}
+
+h6 {
+  font-size: 10px;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.relative {
+  position: relative;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.text-center {
+  text-align: center;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer !important;
+  padding: 0;
+  font: inherit;
+}
+
+.icon {
+  display: block;
+}
+
+.scroll-lock {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.subtext {
+  color: var(--subtext)
+}
+
+.box-style {
+  background-color: var(--bg-2);
+  border: 1px solid var(--stroke);
+  border-radius: var(--md);
+}
+
+.center-text {
+  text-align: center;
+}
+
+.flex-horiz {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-vert {
+  display: flex;
+  flex-direction: column;
+}
+
+.gap-xxs {
+  gap: var(--xxs);
+}
+
+.gap-xs {
+  gap: var(--xs);
+}
+
+.gap-sm {
+  gap: var(--sm);
+}
+
+.gap-md {
+  gap: var(--md);
+}
+
+.gap-lg {
+  gap: var(--lg);
+}
+
+.gap-xl {
+  gap: var(--xl);
+}
+
+.gap-xxl {
+  gap: var(--xxl);
+}
+
+.gap-xxxl {
+  gap: var(--xxxl);
+}

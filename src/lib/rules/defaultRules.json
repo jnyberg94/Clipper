@@ -1,24 +1,21 @@
 {
-    "version": "1.0",
-    "rules": {
-        "interCorporateTransfers": {
-            "direction": "both",
-            "maxDaysApart": 5,
-            "maxDifference": 5
-        },
-        "income": {
-            "direction": "credit"
-        },
-        "expense": {
-            "direction": "debit"
-        },
-        "interest": {
-            "direction": "credit",
-            "maxAmount": 30
-        }, 
-        "bankFees": {
-            "direction": "debit",
-            "maxAmount": 30
-        }
+    "interCorporateTransfers": {
+        "direction": "both",
+        "maxDaysApart": 5,
+        "maxDifference": 5
+    },
+    "income": {
+        "direction": "credit"
+    },
+    "expense": {
+        "direction": "debit"
+    },
+    "interest": {
+        "direction": "credit",
+        "maxAmount": 30
+    },
+    "bankFees": {
+        "direction": "debit",
+        "maxAmount": 30
     }
 }

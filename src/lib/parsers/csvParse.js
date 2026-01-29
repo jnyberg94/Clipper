@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import fs from 'fs';
-import { standardizeTransactions } from '../processors/transactionUnify.js';
+import { standardizeTransactions } from '../processors/standardizeTransactions.js';
+import { ruleEngine } from '../processors/ruleEngine.js';
 
 async function processTransactions(csvFilePath) {
     const text = fs.readFileSync(csvFilePath, 'utf-8');
@@ -38,7 +39,33 @@ async function processTransactions(csvFilePath) {
     return result.data;
 }
 
-//console.log(await processTransactions('./transactions-account.csv'))
 
-console.log(standardizeTransactions(await processTransactions('./transactions-account.csv'), "loop"))
+
+async function pipeline() {
+    const csvs = [
+        {
+            file: './transactions-account.csv',
+            bank: 'loop'
+        },
+        {
+            file: './download-transactions.csv',
+            bank: 'rbcUsd'
+        }
+    ]
+    const nestedData = await Promise.all(csvs.map(async (csv) => {
+        const processedCsv = await processTransactions(csv.file)
+        const standardizedCsv = standardizeTransactions(processedCsv, csv.bank)
+        return standardizedCsv
+    }))
+
+    const cleanedData = nestedData.flat()
+
+    const rules = await ruleEngine(cleanedData)
+    
+    console.log('========== rules stuff ==========', JSON.stringify(rules, null, 2))
+}
+
+pipeline()
+
+//console.log(standardizeTransactions(await processTransactions('./transactions-account.csv'), "loop"))
 //processTransactions('../download-transactions.csv')
