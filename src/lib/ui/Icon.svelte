@@ -1,11 +1,10 @@
 <script>
-  
-  let { 
+  let {
     icon: IconComponent,
-    variant = 'white', 
-    size = 'md',
-    weight = 'regular',
-    class: className = ''
+    variant = "white",
+    size = "md",
+    weight = "regular",
+    class: className = "",
   } = $props();
 
   const sizes = {
@@ -14,29 +13,22 @@
     sm: 16,
     md: 18,
     lg: 20,
-    xl: 24
+    xl: 24,
+    xxl: 28,
   };
 
   const colors = {
-    dark: {
-      white: '#ffffff',
-      grey: '#808080',
-      red: '#EE2C2C'
-    },
-    light: {
-      white: '#000000',
-      grey: '#666666',
-      red: '#EE2C2C'
-    }
+    white: "#000000",
+    grey: "#666666",
+    red: "#EE2C2C",
+    blue: "#3A98FE",
+    green: "#12B30D"
   };
-
-  // Derive the color based on current theme
-  const iconColor = $derived(colors.dark[variant]);
 </script>
 
-<IconComponent 
-  size={sizes[size]} 
-  color={iconColor}
+<IconComponent
+  size={sizes[size]}
+  color={colors[variant]}
   {weight}
-  class='icon {className}'
+  class="icon {className}"
 />

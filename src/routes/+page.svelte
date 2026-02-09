@@ -1,156 +1,134 @@
-<!-- <script>
-  import { invoke } from "@tauri-apps/api/core";
+<script>
+	import Topbar from "$lib/ui/Topbar.svelte";
+	import Bottombar from "$lib/ui/Bottombar.svelte";
+	import DropArea from "$lib/ui/DropArea.svelte";
+	import AnalyzeItem from "$lib/ui/AnalyzeItem.svelte";
+	import ProgressItem from "$lib/ui/ProgressItem.svelte";
+	import { sortFilesEngine } from "$lib/processors/sortFilesEngine";
+	import { relocateFiles } from "$lib/utils/relocateFiles";
+	import { open } from "@tauri-apps/plugin-dialog";
+	import { invoke } from "@tauri-apps/api/core";
+	import { listen } from "@tauri-apps/api/event";
+	import { onMount } from "svelte";
+	import { requestNotificationPermission } from "$lib/utils/notification";
+	import { showNotification } from "$lib/utils/notification";
+	import { event } from "@tauri-apps/api";
 
-  let name = $state("");
-  let greetMsg = $state("");
+	let isAnalyzing = $state(false);
+	let isProcessing = $state(false);
+	let files = $state(null);
+	let currentFile = $state({ name: "", progress: 0 });
+	let queueProgress = $state({
+		currentFile: 0,
+		totalFiles: 0,
+		fileName: "",
+		fileProgress: 0,
+		overallProgress: 0,
+		estimatedRemainingSeconds: 0,
+		processingSpeed: 0,
+	});
 
-  async function greet(event) {
-    event.preventDefault();
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    greetMsg = await invoke("greet", { name });
-  }
+	onMount(async () => {
+		await requestNotificationPermission();
+
+		const unlisten = listen("queue-progress", (event) => {
+			queueProgress = event.payload;
+		});
+
+		return () => {
+			unlisten.then((fn) => fn());
+		};
+	});
+
+	async function handleFolderSelect(folder) {
+		if (!folder) {
+			const selected = await open({
+				multiple: false,
+				directory: true,
+			});
+			if (!selected) return;
+
+			folder = selected;
+		}
+
+		isAnalyzing = true;
+		const filesToConvert = await sortFilesEngine(folder);
+
+		files = await relocateFiles(filesToConvert.toProcess);
+
+		queueProgress = {
+			currentFile: 0,
+			totalFiles: 0,
+			fileName: "",
+			fileProgress: 0,
+			overallProgress: 0,
+			estimatedRemainingSeconds: 0,
+			processingSpeed: 0,
+		};
+
+		isAnalyzing = false;
+		isProcessing = true;
+
+		const result = await invoke("process_video_queue", {
+			toProcess: files,
+			outputDir: folder,
+		});
+
+		await showNotification(
+			"Clipper Processing Complete!",
+			`Successfully processed ${files.length} files`,
+		);
+	}
+
+	function formatTime(seconds) {
+		const mins = Math.floor(seconds / 60);
+		const secs = Math.floor(seconds % 60);
+		return `${mins}:${secs.toString().padStart(2, "0")}`;
+	}
+
+
+	function getItemProgress(index) {
+        const currentIndex = queueProgress.currentFile - 1;
+
+        if (index < currentIndex) {
+            return 100;
+        } else if (index === currentIndex) {
+            return queueProgress.fileProgress;
+        } else {
+            return 0;
+        }
+    }
 </script>
 
-<main class="container">
-  <h1>Welcome to Tauri + Svelte</h1>
+<Topbar />
 
-  <div class="row">
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo vite" alt="Vite Logo" />
-    </a>
-    <a href="https://tauri.app" target="_blank">
-      <img src="/tauri.svg" class="logo tauri" alt="Tauri Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank">
-      <img src="/svelte.svg" class="logo svelte-kit" alt="SvelteKit Logo" />
-    </a>
-  </div>
-  <p>Click on the Tauri, Vite, and SvelteKit logos to learn more.</p>
+<div class="inner-content margin-sm">
+	<DropArea onFolderSelect={handleFolderSelect} />
+	<div class="item-container">
+		<AnalyzeItem {isAnalyzing} />
+		{#each files as file, index (file.name)}
+			<ProgressItem
+				fileName={file.name}
+				progress={getItemProgress(index)}
+			/>
+		{/each}
+	</div>
+</div>
 
-  <form class="row" onsubmit={greet}>
-    <input id="greet-input" placeholder="Enter a name..." bind:value={name} />
-    <button type="submit">Greet</button>
-  </form>
-  <p>{greetMsg}</p>
-</main>
+<Bottombar
+	currentProcessed={queueProgress.currentFile}
+	totalProcessed={queueProgress.totalFiles}
+	{isProcessing}
+	time={queueProgress.estimatedRemainingSeconds * 1000}
+	processingSpeed={queueProgress.processingSpeed}
+/>
 
 <style>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
+	.inner-content {
+		margin-top: var(--xxl);
+	}
 
-.logo.svelte-kit:hover {
-  filter: drop-shadow(0 0 2em #ff3e00);
-}
-
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color: #0f0f0f;
-  background-color: #f6f6f6;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
-}
-
-</style> -->
+	.item-container {
+		margin: var(--lg) var(--sm);
+	}
+</style>

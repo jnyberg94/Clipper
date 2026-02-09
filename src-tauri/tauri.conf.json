@@ -1,26 +1,29 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Recon",
+  "productName": "Clipper",
   "version": "0.1.0",
-  "identifier": "com.kolejain.recon",
+  "identifier": "com.kolejain.clipper",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../build"
   },
+
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "title": "main",
-        "label": "Recon",
-        "width": 1200,
+        "label": "Clipper",
+        "width": 700,
         "height": 800,
         "center": true,
         "resizable": true,
         "visible": true,
         "decorations": true,
         "titleBarStyle": "Overlay",
+        "transparent": true,
         "dragDropEnabled": true,
         "hiddenTitle": true,
         "trafficLightPosition": {
@@ -61,7 +64,8 @@
       "assetProtocol": {
         "enable": true,
         "scope": [
-          "$APPDATA/**"
+          "$APPDATA/**",
+          "$HOME/**"
         ]
       }
     }

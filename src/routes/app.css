@@ -6,20 +6,22 @@
 
 :root {
   --bg-1: #FAFAFA;
-  --bg-2: #F6F6F6;
+  --bg-2: #F2F2F2;
   --bg-3: #F2F2F2;
-  --bg-3: #EBEBEB;
+  --bg-4: #EBEBEB;
   --stroke: #E0E0E0;
   --stroke-bright: #CDCDCD;
   --subtext: #7D7D7D;
   --text: #1A1A1A;
   --button: #161618;
-  --success: #149610;
-  --success-bg: #D9F7D7;
+  --success: #12B30D;
+  --bg-success: #D9F7D7;
+  --bg-dark-success: #B8EFB4;
   --error: #EE2C2C;
-  --error-bg: #F7D7D8;
-  --active: #3A72FF;
-  --bg-active: #EBEFFA;
+  --bg-error: #F7D7D8;
+  --active: #3A98FE;
+  --bg-dark-active: #D7EBFF;
+  --bg-active: #E9F4FF;
   --warning: #F6C13C;
   --bg-warning: #FFF2DD;
   --purple: #673CF6;
@@ -29,6 +31,7 @@
   --transition: cubic-bezier(0.075, 0.82, 0.165, 1);
 
   --xxs: 4px;
+  --xms: 6px;
   --xs: 8px;
   --sm: 12px;
   --md: 16px;
@@ -38,9 +41,20 @@
   --xxxl: 64px;
 }
 
-html,
-body {
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   overscroll-behavior: none;
+  background-color: var(--bg-2);
+  border-radius: var(--lg);
+}
+
+body {
+  padding: var(--xms);
+  
 }
 
 @font-face {
@@ -94,9 +108,6 @@ h1 {
   letter-spacing: -2.5%;
 }
 
-h1.small {
-  font-size: 28px;
-}
 
 h2 {
   font-size: 22px;
@@ -111,7 +122,7 @@ textarea {
 h4,
 span,
 li {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 h5 {
@@ -125,7 +136,6 @@ h6 {
 .bold {
   font-weight: 600;
 }
-
 
 a {
   text-decoration: none;
@@ -166,14 +176,8 @@ button {
   width: 100%;
 }
 
-.subtext {
-  color: var(--subtext)
-}
-
-.box-style {
-  background-color: var(--bg-2);
+.border {
   border: 1px solid var(--stroke);
-  border-radius: var(--md);
 }
 
 .center-text {
@@ -190,8 +194,43 @@ button {
   flex-direction: column;
 }
 
+.just-cont-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.text-grey {
+  color: var(--subtext)
+}
+
+.text-active {
+  color: var(--active)
+}
+
+.text-stroke-bright {
+  color: var(--stroke-bright)
+}
+
+.hover {
+  padding: var(--xxs);
+  border-radius: var(--xms);
+}
+
+.hover:hover {
+  background-color: var(--bg-2);
+}
+
+
+
 .gap-xxs {
   gap: var(--xxs);
+}
+
+.gap-xms {
+  gap: var(--xms)
 }
 
 .gap-xs {
@@ -220,4 +259,153 @@ button {
 
 .gap-xxxl {
   gap: var(--xxxl);
+}
+
+
+.width-xxs {
+  width: var(--xxs);
+}
+
+.width-xms {
+  width: var(--xms)
+}
+
+.width-xs {
+  width: var(--xs);
+}
+
+.width-sm {
+  width: var(--sm);
+}
+
+.width-md {
+  width: var(--md);
+}
+
+.width-lg {
+  width: var(--lg);
+}
+
+.width-xl {
+  width: var(--xl);
+}
+
+.width-xxl {
+  width: var(--xxl);
+}
+
+.width-xxxl {
+  width: var(--xxxl);
+}
+
+
+.height-xxs {
+  height: var(--xxs);
+}
+
+.height-xms {
+  height: var(--xms)
+}
+
+.height-xs {
+  height: var(--xs);
+}
+
+.height-sm {
+  height: var(--sm);
+}
+
+.height-md {
+  height: var(--md);
+}
+
+.height-lg {
+  height: var(--lg);
+}
+
+.height-xl {
+  height: var(--xl);
+}
+
+.height-xxl {
+  height: var(--xxl);
+}
+
+.height-xxxl {
+  height: var(--xxxl);
+}
+
+
+.padding-xxs {
+  padding: var(--xxs);
+}
+
+.padding-xms {
+  padding: var(--xms)
+}
+
+.padding-xs {
+  padding: var(--xs);
+}
+
+.padding-sm {
+  padding: var(--sm);
+}
+
+.padding-md {
+  padding: var(--md);
+}
+
+.padding-lg {
+  padding: var(--lg);
+}
+
+.padding-xl {
+  padding: var(--xl);
+}
+
+.padding-xxl {
+  padding: var(--xxl);
+}
+
+.padding-xxxl {
+  padding: var(--xxxl);
+}
+
+
+
+.margin-xxs {
+  margin: var(--xxs);
+}
+
+.margin-xms {
+  margin: var(--xms)
+}
+
+.margin-xs {
+  margin: var(--xs);
+}
+
+.margin-sm {
+  margin: var(--sm);
+}
+
+.margin-md {
+  margin: var(--md);
+}
+
+.margin-lg {
+  margin: var(--lg);
+}
+
+.margin-xl {
+  margin: var(--xl);
+}
+
+.margin-xxl {
+  margin: var(--xxl);
+}
+
+.margin-xxxl {
+  margin: var(--xxxl);
 }

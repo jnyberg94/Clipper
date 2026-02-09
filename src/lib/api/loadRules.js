@@ -2,20 +2,28 @@ import {
     readTextFile,
     writeTextFile,
     exists,
+    mkdir,
     BaseDirectory,
 } from "@tauri-apps/plugin-fs";
-//import defaultRules from "../rules/defaultRules.json" with { type: 'json'}; //this is IMPORTANT for production version!
+import defaultRules from "$lib/rules/defaultRules.json";
+
 
 export async function loadRules() {
+
     const fileName = "rules.json";
     try {
+        await mkdir("", { 
+            baseDir: BaseDirectory.AppLocalData, 
+            recursive: true 
+        });
+
         const fileExists = await exists(fileName, {
-            dir: BaseDirectory.AppData,
+            baseDir: BaseDirectory.AppLocalData,
         });
         
         if (fileExists) {
             const contents = await readTextFile(fileName, {
-                dir: BaseDirectory.AppData,
+                baseDir: BaseDirectory.AppLocalData,
             });
             return JSON.parse(contents);
         } else {
@@ -23,7 +31,7 @@ export async function loadRules() {
                 fileName,
                 JSON.stringify(defaultRules, null, 2),
                 {
-                    dir: BaseDirectory.AppData,
+                    baseDir: BaseDirectory.AppLocalData,
                 },
             );
             return defaultRules;
