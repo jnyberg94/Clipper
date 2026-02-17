@@ -22,8 +22,8 @@
   --active: #3A98FE;
   --bg-dark-active: #D7EBFF;
   --bg-active: #E9F4FF;
-  --warning: #F6C13C;
-  --bg-warning: #FFF2DD;
+  --warning: #C18E0B;
+  --bg-warning: #f6e5c9;
   --purple: #673CF6;
   --bg-purple: #E5DDFF;
   
@@ -76,14 +76,7 @@ body {
 
 h1,
 h2,
-h3 {
-  font-family: "DM Sans";
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-weight: 600;
-}
-
-
+h3,
 h4,
 h5,
 h6,
@@ -116,7 +109,7 @@ h2 {
 h3,
 input,
 textarea {
-  font-size: 17px;
+  font-size: 16px;
 }
 
 h4,
@@ -176,6 +169,10 @@ button {
   width: 100%;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .border {
   border: 1px solid var(--stroke);
 }
@@ -196,6 +193,10 @@ button {
 
 .just-cont-center {
   justify-content: center;
+}
+
+.just-cont-space-btw {
+  justify-content: space-between;
 }
 
 .align-items-center {
@@ -221,6 +222,16 @@ button {
 
 .hover:hover {
   background-color: var(--bg-2);
+}
+
+.chip {
+  padding: 2px var(--xms);
+  border-radius: var(--xs);
+}
+
+.input {
+  background-color: transparent;
+  outline: none;
 }
 
 
@@ -408,4 +419,44 @@ button {
 
 .margin-xxxl {
   margin: var(--xxxl);
+}
+
+.bg-1 {
+  background-color: var(--bg-1);
+}
+
+.bg-2 {
+  background-color: var(--bg-2);
+}
+
+.bg-3 {
+  background-color: var(--bg-3);
+}
+
+.bg-4 {
+  background-color: var(--bg-4);
+}
+
+.bg-success {
+  background-color: var(--bg-success);
+}
+
+.bg-dark-success {
+  background-color: var(--bg-dark-success);
+}
+
+.bg-dark-active {
+  background-color: var(--bg-dark-active);
+}
+
+.bg-active {
+  background-color: var(--bg-active);
+}
+
+.bg-purple {
+  background-color: var(--bg-purple);
+}
+
+.bg-warning {
+  background-color: var(--bg-warning);
 }

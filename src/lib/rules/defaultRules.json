@@ -36,7 +36,7 @@
   "settings": {
     "tmpFolder": "~/Library/Application Support/Clipper/tmp",
     "outputFolder": "~/Movies/Clipper",
-    "autoClearTmpOnLaunch": true,
+    "autoClearTmp": true,
     "permaSkip": [".DS_Store"]
   }
 }

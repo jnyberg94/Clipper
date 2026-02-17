@@ -1,6 +1,6 @@
 import { readDir, stat } from '@tauri-apps/plugin-fs'
 import { join, appLocalDataDir } from '@tauri-apps/api/path'
-import { loadRules } from '$lib/api/loadRules'
+import { loadRules } from '$lib/utils/loadRules'
 
 export async function getFolderStats() {
     const rules = await loadRules()

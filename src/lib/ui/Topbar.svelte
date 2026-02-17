@@ -1,35 +1,41 @@
 <script>
     import { Trash, StackMinus, FadersHorizontal } from "phosphor-svelte";
     import Icon from "./Icon.svelte";
-    import { getFolderStats } from "$lib/utils/getFolderSize";
+    import { getFolderStats } from "$lib/utils/getFolderStats";
+    import { folderStats } from "$lib/stores/folderStats";
     import { onMount } from "svelte";
+    import { deleteTmpFolder } from "$lib/utils/deleteTmpFolder";
+    import Menu from "./Menu.svelte";
 
-    let { items = 0 } = $props()
+    async function handleDelete() {
+        await deleteTmpFolder();
+        await folderStats.refresh();
+    }
 
-    let stats = $state({ count: 0, formattedSize: '0 Bytes' });
-
-    onMount( async()=>{
-        stats = await getFolderStats()
-    })
-
+    onMount(() => {
+        folderStats.refresh();
+    });
 </script>
 
 <div class="topbar align-items-center flex-horiz gap-xs" data-tauri-drag-region>
-    <button class="hover flex-horiz gap-xms">
-        <h4 class="text-grey">{`${stats.count} items, ${stats.formattedSize}`}</h4>
-        <Icon icon={Trash} size='lg' variant='grey' />
+    <button onclick={handleDelete} class="hover flex-horiz gap-xms">
+        <h4 class="text-grey">
+            {`${$folderStats.count} items, ${$folderStats.formattedSize}`}
+        </h4>
+        <Icon icon={Trash} size="lg" variant="grey" />
     </button>
     <button class="hover">
-        <Icon icon={StackMinus} size='lg' variant='grey' />
+        <Icon icon={StackMinus} size="lg" variant="grey" />
     </button>
-    <button class="hover">
-        <Icon icon={FadersHorizontal} size='lg' variant='grey' />
-    </button>
+    <div class="relative">
+        <button class="hover">
+            <Icon icon={FadersHorizontal} size="lg" variant="grey" />
+        </button>
+        <!-- <Menu /> -->
+    </div>
 </div>
 
-
 <style>
-
     .topbar {
         justify-content: flex-end;
         position: fixed;
@@ -37,11 +43,10 @@
         left: 0;
         width: 100%;
         height: 50px;
-        padding: 0 var(--md)
+        padding: 0 var(--md);
     }
 
     h4.text-grey {
         padding-left: var(--xxs);
     }
-
 </style>

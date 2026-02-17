@@ -101,7 +101,7 @@
     {
       "identifier": "fs:scope",
       "allow": [
-        "$APPLOCALDATA/*",
+        "$APPLOCALDATA/**",
         "$APPLOCALDATA/tmp/*"
       ]
     },
@@ -110,6 +110,14 @@
       "allow": [
         "$APPLOCALDATA/**",
         "$APPLOCALDATA/tmp/*"
+      ]
+    },
+    {
+      "identifier": "fs:allow-rename",
+      "allow": [
+        {
+          "path": "**"
+        }
       ]
     }
   ]

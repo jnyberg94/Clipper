@@ -2,7 +2,7 @@
     import { CheckCircle } from "phosphor-svelte";
     import Icon from "./Icon.svelte";
 
-    let { progress = 0, fileName } = $props();
+    let { progress = 0, fileName, isNested } = $props();
 
     const size = 20;
     const strokeWidth = 6;
@@ -15,8 +15,8 @@
     const isFinished = $derived(Math.round(progress) === 100);
 </script>
 
-<div class="progress-item">
-    <div class="left-stroke flex-horiz align-items-center gap-xs">
+<div class:nested={isNested} class="progress-item">
+    <div class:nested={isNested} class="item-padding flex-horiz align-items-center gap-xs">
         {#if !isFinished}
         <svg width={size} height={size}>
             <circle
@@ -51,7 +51,16 @@
 </div>
 
 <style>
-    .left-stroke {
+
+    .progress-item.nested {
+        padding-left: var(--xs)
+    }
+
+    .item-padding {
+        padding: var(--xs) 0 var(--xs) 0;
+    }
+
+    .item-padding.nested {
         border-left: 1px solid var(--stroke);
         padding: var(--xs) 0 var(--xs) var(--md);
     }

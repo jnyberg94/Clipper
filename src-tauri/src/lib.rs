@@ -1,15 +1,12 @@
-use std::path::PathBuf;
 use tauri::Emitter;
 use regex::Regex;
 use std::process::{Command, Stdio};
 use std::io::{BufReader, BufRead};
 use std::time::{Instant, Duration};
+use std::path::PathBuf;
+use std::fs;
+use serde::Deserialize;
 
-#[derive(serde::Deserialize)]
-struct VideoItem {
-    path: String,
-    name: String,
-}
 
 #[tauri::command]
 async fn focus_window(window: tauri::WebviewWindow) -> Result<(), String> {
@@ -17,116 +14,21 @@ async fn focus_window(window: tauri::WebviewWindow) -> Result<(), String> {
     Ok(())
 }
 
-// #[tauri::command]
-// async fn process_video_queue(
-//     app: tauri::AppHandle,
-//     to_process: Vec<VideoItem>, 
-//     output_dir: String
-// ) -> Result<String, String> {
-//     println!("Starting video processing queue with {} items", to_process.len());
-//     let total_files = to_process.len();
-//     let start_time = std::time::Instant::now();
-    
-//     for (index, item) in to_process.iter().enumerate() {
-//         let current_file = index + 1;
-//         println!("\n[{}/{}] Processing: {}", current_file, total_files, item.name);
-        
-//         let input_path = PathBuf::from(&item.path);
-//         let mut output_path = PathBuf::from(&output_dir);
-//         output_path.push(&item.name);
-        
-//         // Get video duration first
-//         let duration = get_video_duration(&input_path)?;
-        
-//         // Emit file start event
-//         app.emit("file-progress", serde_json::json!({
-//             "currentFile": current_file,
-//             "totalFiles": total_files,
-//             "fileName": item.name,
-//             "progress": 0
-//         })).ok();
-        
-//         // Execute FFmpeg with progress tracking
-//         let mut child = Command::new("ffmpeg")
-//             .arg("-i").arg(&input_path)
-//             .arg("-progress").arg("pipe:1")
-//             .arg("-r").arg("60")
-//             .arg("-c:v").arg("h264_videotoolbox")
-//             .arg("-b:v").arg("13M")
-//             .arg("-c:a").arg("copy")
-//             .arg("-y")
-//             .arg(&output_path)
-//             .stdout(Stdio::piped())
-//             .stderr(Stdio::null())
-//             .spawn()
-//             .map_err(|e| format!("Failed to spawn FFmpeg: {}", e))?;
-        
-//         // Read progress from stdout
-//         if let Some(stdout) = child.stdout.take() {
-//             let reader = BufReader::new(stdout);
-//             let time_regex = Regex::new(r"out_time_ms=(\d+)").unwrap();
-            
-//             for line in reader.lines() {
-//                 if let Ok(line) = line {
-//                     if let Some(caps) = time_regex.captures(&line) {
-//                         if let Some(time_match) = caps.get(1) {
-//                             if let Ok(time_us) = time_match.as_str().parse::<f64>() {
-//                                 let current_time = time_us / 1_000_000.0; // Convert to seconds
-//                                 let progress = ((current_time / duration) * 100.0).min(100.0) as u8;
-                                
-//                                 app.emit("file-progress", serde_json::json!({
-//                                     "currentFile": current_file,
-//                                     "totalFiles": total_files,
-//                                     "fileName": item.name,
-//                                     "progress": progress
-//                                 })).ok();
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-        
-//         // Wait for process to complete
-//         let status = child.wait()
-//             .map_err(|e| format!("Failed to wait for FFmpeg: {}", e))?;
-        
-//         if !status.success() {
-//             return Err(format!("FFmpeg failed on file: {}", item.name));
-//         }
-        
-//         // Emit file complete event with 100% progress
-//         app.emit("file-progress", serde_json::json!({
-//             "currentFile": current_file,
-//             "totalFiles": total_files,
-//             "fileName": item.name,
-//             "progress": 100
-//         })).ok();
-        
-//         // Calculate estimated time remaining
-//         let elapsed = start_time.elapsed().as_secs_f64();
-//         let avg_time_per_file = elapsed / current_file as f64;
-//         let remaining_files = total_files - current_file;
-//         let estimated_remaining = (avg_time_per_file * remaining_files as f64) as u64;
-        
-//         app.emit("queue-progress", serde_json::json!({
-//             "processed": current_file,
-//             "total": total_files,
-//             "estimatedRemainingSeconds": estimated_remaining
-//         })).ok();
-        
-//         println!("  ✓ Successfully processed: {}", item.name);
-//     }
-    
-//     println!("\n✓ All {} files processed successfully", total_files);
-//     Ok("All files processed successfully".into())
-// }
+
 
 // A struct to help track specific details we need for calculation
 struct QueueItem {
     path: PathBuf,
     name: String,
     duration: f64,
+}
+
+
+#[derive(Deserialize)]
+struct VideoItem {
+    path: PathBuf,
+    output_path: PathBuf,
+    name: String,
 }
 
 #[tauri::command]
@@ -266,7 +168,55 @@ async fn process_video_queue(
     Ok("All files processed successfully".into())
 }
 
-// Helper function to get video duration
+// #[tauri::command]
+// async fn process_video_queue(app: tauri::AppHandle, jobs: Vec<VideoJob>) -> Result<String, String> {
+//     // 1. Get total duration for accurate ETA
+//     let mut total_duration = 0.0;
+//     let mut durations = Vec::new();
+//     for job in &jobs {
+//         let d = get_video_duration(&job.path).unwrap_or(0.0);
+//         total_duration += d;
+//         durations.push(d);
+//     }
+
+//     let start_time = Instant::now();
+//     let mut finished_duration = 0.0;
+
+//     // 2. Process the flat list
+//     for (i, job) in jobs.iter().enumerate() {
+//         if let Some(p) = job.output_path.parent() { fs::create_dir_all(p).ok(); }
+
+//         let mut child = Command::new("ffmpeg")
+//             .args(["-i", job.path.to_str().unwrap(), "-progress", "pipe:1", "-r", "60", 
+//                    "-c:v", "h264_videotoolbox", "-b:v", "13M", "-c:a", "copy", "-y"])
+//             .arg(&job.output_path)
+//             .stdout(Stdio::piped()).stderr(Stdio::null()).spawn().map_err(|e| e.to_string())?;
+
+//         let reader = BufReader::new(child.stdout.take().unwrap());
+//         for line in reader.lines().map_while(Result::ok) {
+//             if let Some(caps) = Regex::new(r"out_time_ms=(\d+)").unwrap().captures(&line) {
+//                 let current_secs = caps[1].parse::<f64>().unwrap_or(0.0) / 1_000_000.0;
+//                 let total_done = finished_duration + current_secs;
+//                 let speed = total_done / start_time.elapsed().as_secs_f64().max(0.1);
+                
+//                 app.emit("queue-progress", serde_json::json!({
+//                     "currentFile": i + 1,
+//                     "totalFiles": jobs.len(),
+//                     "fileName": job.name,
+//                     "fileProgress": (current_secs / durations[i] * 100.0).min(100.0),
+//                     "estimatedRemainingSeconds": ((total_duration - total_done) / speed.max(0.1)) as u64,
+//                     "processingSpeed": format!("{:.2}x", speed)
+//                 })).ok();
+//             }
+//         }
+//         child.wait().ok();
+//         finished_duration += durations[i];
+//     }
+//     Ok("Done".into())
+// }
+
+
+
 fn get_video_duration(input_path: &PathBuf) -> Result<f64, String> {
     let output = Command::new("ffprobe")
         .arg("-v").arg("error")
