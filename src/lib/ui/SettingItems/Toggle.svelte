@@ -1,9 +1,10 @@
 <script>
     
-    let { toggleState = $bindable(true) } = $props()
+    let { toggleState = $bindable() } = $props()
 
     function handleToggle() {
         toggleState = !toggleState
+        //toggled()
     }
 
 </script>

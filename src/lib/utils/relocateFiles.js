@@ -47,7 +47,6 @@
 
 
 import { invoke } from '@tauri-apps/api/core'
-import { loadRules } from "./loadRules.js";
 import { readDir } from '@tauri-apps/plugin-fs';
 import { extname, join, appLocalDataDir, basename } from "@tauri-apps/api/path";
 import {

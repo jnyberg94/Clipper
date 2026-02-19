@@ -1,10 +1,10 @@
 import { readDir, remove } from "@tauri-apps/plugin-fs";
 import { appDataDir } from "@tauri-apps/api/path";
 import { join, } from "@tauri-apps/api/path";
-import { loadRules } from "$lib/utils/loadRules";
+import { getRules } from "$lib/utils/rulesActions";
 
 export async function deleteTmpFolder() {
-    const rules = await loadRules()
+    const rules = await getRules()
     try {
         const appDataPath = await appDataDir();
         const tmpPath = await join(appDataPath, 'tmp');

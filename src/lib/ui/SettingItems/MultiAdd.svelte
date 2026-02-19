@@ -1,13 +1,20 @@
-<!-- ======== UNAPPROVED ======= -->
 <script>
   import { X } from "phosphor-svelte";
 
-  let { chips = $bindable([".DS_Store"]) } = $props();
+  let { chips = $bindable([]) } = $props();
 
   let inputValue = $state("");
   let inputElement = $state(null)
 
   function removeChip(index) {
+    chips.splice(index, 1)
+  }
+
+  function handleKeyDown(e) {
+    if(e.key === 'Enter') {
+      chips.push(inputValue)
+      inputValue = ""
+    }
 
   }
 </script>

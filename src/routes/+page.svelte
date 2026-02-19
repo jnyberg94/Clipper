@@ -13,10 +13,10 @@
 	import { onMount } from "svelte";
 	import { requestNotificationPermission } from "$lib/utils/notification";
 	import { showNotification } from "$lib/utils/notification";
-	import { flattenEverything } from "$lib/utils/flattenEverything";
+	//import { flattenEverything } from "$lib/utils/flattenEverything";
 	import { folderStats } from "$lib/stores/folderStats";
 	import { getItemProgress } from "$lib/utils/getItemProgress";
-	import { createFileStructure } from "$lib/utils/createFileStructure";
+	import { createFileStructure } from "$lib/processors/createFileStructure";
 	// import { resetQueue }
 
 	//tauri imports
@@ -126,10 +126,6 @@
 		estimatedRemainingSeconds: 0,
 		processingSpeed: 0,
 	});
-
-	$effect(()=>{
-		console.log('queueProgress', queueProgress)
-	})
 
 	async function handleFolderSelect(folder) {
 		if (!folder) {

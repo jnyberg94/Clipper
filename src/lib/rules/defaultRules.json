@@ -6,37 +6,16 @@
       "extensions": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".heic"],
       "action": "skip",
       "reason": "Image file"
-    },
-    {
-      "name": "Skip already at 60fps",
-      "type": "videoFps",
-      "minFps": 59.94,
-      "maxFps": 60.01,
-      "action": "skip",
-      "reason": "Already 60fps"
-    },
-    {
-      "name": "Skip low framerate videos",
-      "type": "videoFps",
-      "minFps": 0,
-      "maxFps": 50,
-      "action": "skip",
-      "reason": "Standard framerate video"
-    },
-    {
-      "name": "Process variable framerate",
-      "type": "videoFps",
-      "minFps": 50.01,
-      "maxFps": 59.93,
-      "action": "process",
-      "targetFps": 60,
-      "reason": "Variable framerate recording"
     }
   ],
   "settings": {
     "tmpFolder": "~/Library/Application Support/Clipper/tmp",
-    "outputFolder": "~/Movies/Clipper",
     "autoClearTmp": true,
-    "permaSkip": [".DS_Store"]
+    "permaSkip": [".DS_Store"],
+    "videoProcessing": {
+      "minFps": 50.01,
+      "maxFps": 59.93,
+      "targetFps": 60
+    }
   }
 }

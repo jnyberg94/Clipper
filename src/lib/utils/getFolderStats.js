@@ -1,9 +1,9 @@
 import { readDir, stat } from '@tauri-apps/plugin-fs'
 import { join, appLocalDataDir } from '@tauri-apps/api/path'
-import { loadRules } from '$lib/utils/loadRules'
+import { getRules } from '$lib/utils/rulesActions'
 
 export async function getFolderStats() {
-    const rules = await loadRules()
+    const rules = await getRules()
     const appDataDir = await appLocalDataDir();
     const folderPath = await join(appDataDir, 'tmp');
     const entries = await readDir(folderPath, { recursive: true });
