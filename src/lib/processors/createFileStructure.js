@@ -1,3 +1,5 @@
+import { join } from "@tauri-apps/api/path";
+
 export function createFileStructure(folders = [], looseFiles = []) {
     const rustJobs = [];
     const uiFiles = { folders: [], toProcess: [] };
@@ -30,6 +32,7 @@ export function createFileStructure(folders = [], looseFiles = []) {
             rustJobs.push({
                 type: 'file',
                 data: file,
+                originalPath: `${folder.originalPath}/${file.name}`,
                 globalIndex: file.globalIndex
             });
         });
@@ -46,6 +49,7 @@ export function createFileStructure(folders = [], looseFiles = []) {
         rustJobs.push({
             type: 'file',
             data: file,
+            originalPath: file.originalPath || file.path,
             globalIndex: file.globalIndex
         });
     });
@@ -54,7 +58,7 @@ export function createFileStructure(folders = [], looseFiles = []) {
         .filter(item => item.type === 'file')
         .map(item => ({
             path: item.data.path,
-            output_path: item.data.outputPath || item.data.path,
+            output_path: item.originalPath, //item.data.outputPath || item.data.path,
             name: item.data.name
         }));
 

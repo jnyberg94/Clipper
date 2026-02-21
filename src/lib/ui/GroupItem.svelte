@@ -4,9 +4,15 @@
     import ProgressItem from "./ProgressItem.svelte";
     import { getItemProgress } from "$lib/utils/getItemProgress";
 
-    let { folderName, itemsInGroup, isExpanded, children } = $props();
+    let { folderName, itemsInGroup, isExpanded = false, children } = $props();
 
-    let expanded = $state(false);
+    // svelte-ignore state_referenced_locally
+    let expanded = $state(isExpanded);
+
+    $effect(() => {
+        expanded = isExpanded;
+    });
+
 </script>
 
 <div class="group-item flex-vert gap-xs">

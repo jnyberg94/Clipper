@@ -19,7 +19,7 @@
 
 </script>
 
-<div class:visible={isProcessing} class="bottombar just-cont-center align-items-center flex-horiz gap-sm">
+<div class:visible={isProcessing} class="bottombar absolute just-cont-center align-items-center flex-horiz gap-sm">
     <img class="width-md height-md" src="icons/active.svg" alt="green dot" />
     <h4>
         <span>{currentProcessed}</span>
@@ -40,7 +40,6 @@
 
 <style>
     .bottombar {
-        position: absolute;
         bottom: -60px;
         background-color: var(--bg-3);
         height: 40px;

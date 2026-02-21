@@ -9,12 +9,14 @@
     import { invoke } from "@tauri-apps/api/core";
     import { show } from "@tauri-apps/api/app";
 
+    let { resetQueue } = $props();
+
     let showMenu = $state(false);
-    let menuComponent = $state(null)
+    let menuComponent = $state(null);
 
     function handleOuterClick(e) {
         if (!e.target.closest(".relative")) {
-            menuComponent?.saveRules()
+            menuComponent?.saveRules();
             showMenu = false;
         }
     }
@@ -26,8 +28,8 @@
 
     async function cancelProcessing() {
         await invoke("cancel_processing");
+        resetQueue();
     }
-    // feature : clean UI after cancelling processing
 
     onMount(() => {
         folderStats.refresh();
@@ -36,31 +38,51 @@
 
 <svelte:window onclick={handleOuterClick} />
 
-<div class="topbar align-items-center flex-horiz gap-xs" data-tauri-drag-region>
-    <button onclick={handleDelete} class="hover flex-horiz gap-xms">
-        <h4 class="text-grey">
-            {`${$folderStats.count} items, ${$folderStats.formattedSize}`}
-        </h4>
-        <Icon icon={Trash} size="lg" variant="grey" />
-    </button>
-    <button onclick={cancelProcessing} class="hover">
-        <Icon icon={StackMinus} size="lg" variant="grey" />
-    </button>
-    <div class="relative">
-        <button
-            onclick={() => (showMenu = !showMenu)}
-            class:active={showMenu}
-            class="hover"
-        >
-            <Icon icon={FadersHorizontal} size="lg" variant="grey" />
-        </button>
-        {#if showMenu}
-            <Menu bind:this={menuComponent} />
-        {/if}
+<div class="topbar flex-horiz gap-xs relative align-items-center" data-tauri-drag-region>
+    <div class="flex-horiz gap-xs absolute traffic-light-cont">
+        <div class="traffic-light"></div>
+        <div class="traffic-light"></div>
+        <div class="traffic-light"></div>
     </div>
+
+        <button onclick={handleDelete} class="hover flex-horiz gap-xms">
+            <h4 class="text-grey">
+                {`${$folderStats.count} items, ${$folderStats.formattedSize}`}
+            </h4>
+            <Icon icon={Trash} size="lg" variant="grey" />
+        </button>
+        <button onclick={cancelProcessing} class="hover">
+            <Icon icon={StackMinus} size="lg" variant="grey" />
+        </button>
+        <div class="relative">
+            <button
+                onclick={() => (showMenu = !showMenu)}
+                class:active={showMenu}
+                class="hover"
+            >
+                <Icon icon={FadersHorizontal} size="lg" variant="grey" />
+            </button>
+            {#if showMenu}
+                <Menu bind:this={menuComponent} />
+            {/if}
+        </div>
+
 </div>
 
 <style>
+
+    .traffic-light-cont {
+        top: 18px;
+        left: 24.6px;
+    }
+
+    .traffic-light {
+        width: 12px;
+        height: 12px;
+        background-color: var(--stroke);
+        border-radius: 50%;
+    }
+
     .topbar {
         justify-content: flex-end;
         position: fixed;

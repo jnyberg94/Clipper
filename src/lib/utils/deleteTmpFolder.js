@@ -19,10 +19,8 @@ export async function deleteTmpFolder() {
             })
 
         await Promise.all(deletePromises)
-        console.log('Tmp folder cleared successfully');
         return { success: true, deletedCount: deletePromises.length };
     } catch (err) {
-        console.log('Error clearing tmp folder:', err)
         throw err
     }
 

@@ -13,7 +13,7 @@
   --stroke-bright: #CDCDCD;
   --subtext: #7D7D7D;
   --text: #1A1A1A;
-  --button: #161618;
+  --button: #222222;
   --success: #12B30D;
   --bg-success: #D9F7D7;
   --bg-dark-success: #B8EFB4;
@@ -143,6 +143,10 @@ a {
   position: relative;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -205,6 +209,10 @@ button {
 
 .text-grey {
   color: var(--subtext)
+}
+
+.text-white {
+  color: var(--bg-1)
 }
 
 .text-active {

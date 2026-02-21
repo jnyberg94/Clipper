@@ -26,10 +26,10 @@ fn cancel_processing(state: tauri::State<ProcessingState>) {
 
 struct QueueItem {
     path: PathBuf,
+    output_path: PathBuf,
     name: String,
     duration: f64,
 }
-
 
 #[derive(Deserialize)]
 struct VideoItem {
@@ -43,7 +43,7 @@ async fn process_video_queue(
     app: tauri::AppHandle,
     state: tauri::State<'_, ProcessingState>,
     to_process: Vec<VideoItem>, 
-    output_dir: String
+    //output_dir: String
 ) -> Result<String, String> {
     println!("Starting video processing queue with {} items", to_process.len());
     
@@ -63,6 +63,7 @@ async fn process_video_queue(
         total_queue_duration += duration;
         queue_items.push(QueueItem {
             path: input_path,
+            output_path: item.output_path,
             name: item.name,
             duration,
         });
@@ -73,8 +74,8 @@ async fn process_video_queue(
     }
 
     let start_time = Instant::now();
-    let mut accumulated_duration_finished = 0.0; // Duration of all fully completed files
-    let mut last_emit = Instant::now(); // For throttling UI updates
+    let mut accumulated_duration_finished = 0.0; 
+    let mut last_emit = Instant::now(); 
 
     // 2. PROCESSING LOOP
     for (index, item) in queue_items.iter().enumerate() {
@@ -87,8 +88,15 @@ async fn process_video_queue(
         
         println!("[{}/{}] Processing: {} ({}s)", current_file_index, total_files, item.name, item.duration);
         
-        let mut output_path = PathBuf::from(&output_dir);
-        output_path.push(&item.name);
+        let mut output_path = item.output_path.clone(); //PathBuf::from(&output_dir);
+        //output_path.push(&item.name);
+
+        if let Some(parent) = output_path.parent() {
+            if !parent.exists() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| format!("Failed to create directories: {}", e))?;
+            }
+        }
 
         let mut child = Command::new("ffmpeg")
             .arg("-i").arg(&item.path)

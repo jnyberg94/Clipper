@@ -29,6 +29,8 @@
             <h5 class="text-grey">Permantly skip files named:</h5>
             <MultiAdd bind:chips={rules.settings.permaSkip} />
         </div>
+    
+        <!--Add in 'target fps?'-->
     {/if}
 </div>
 

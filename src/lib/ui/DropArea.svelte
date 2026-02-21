@@ -23,7 +23,6 @@
 					const paths = event.payload.paths;
 
 					if (paths && paths.length > 0) {
-                        console.log('paths', paths)
 						try {
 							await invoke('focus_window');
                             await onFolderSelect(paths[0])
