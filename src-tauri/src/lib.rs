@@ -88,7 +88,7 @@ async fn process_video_queue(
         
         println!("[{}/{}] Processing: {} ({}s)", current_file_index, total_files, item.name, item.duration);
         
-        let mut output_path = item.output_path.clone(); //PathBuf::from(&output_dir);
+        let output_path = item.output_path.clone(); //PathBuf::from(&output_dir);
         //output_path.push(&item.name);
 
         if let Some(parent) = output_path.parent() {

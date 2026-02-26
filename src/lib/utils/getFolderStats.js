@@ -11,15 +11,28 @@ export async function getFolderStats() {
     let totalSize = 0;
     let totalFiles = 0;
 
-    for (const entry of entries) {
-        if(rules.settings.permaSkip.includes(entry.name)) continue
+    async function processDirectory(path) {
+        const entries = await readDir(path)
 
-        if (!entry.isDirectory) {
-            totalFiles++;
-            const filePath = await join(folderPath, entry.name);
-            const fileStats = await stat(filePath);
-            totalSize += fileStats.size;
+        for (const entry of entries) {
+            if (rules.settings.permaSkip.includes(entry.name)) continue;
+
+            const fullPath = await join(path, entry.name)
+
+            if (entry.isDirectory) {
+                await processDirectory(fullPath)
+            } else {
+                totalFiles++;
+                const fileStats = await stat(fullPath)
+                totalSize += fileStats.size
+            }
         }
+    }
+
+    try {
+        await processDirectory(folderPath)
+    } catch (err) {
+        console.error('Error reading directory:', err)
     }
 
     return {
@@ -35,8 +48,7 @@ function formatBytes(bytes, decimals = 1) {
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }

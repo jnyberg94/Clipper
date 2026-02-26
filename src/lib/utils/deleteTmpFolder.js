@@ -15,7 +15,7 @@ export async function deleteTmpFolder() {
             .filter(file => !rules.settings.permaSkip.includes(file.name))
             .map(async (file) => {
                 const filePath = await join(tmpPath, file.name)
-                await remove(filePath)
+                await remove(filePath, { recursive: true})
             })
 
         await Promise.all(deletePromises)
