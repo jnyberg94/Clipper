@@ -38,6 +38,13 @@ struct VideoItem {
     name: String,
 }
 
+//to get proper path for ffmpeg and ffprobe
+fn get_ffmepg_command(program: &str) -> Command {
+    let mut cmd = Command::new(program);
+    cmd.env("PATH", "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin");
+    cmd
+}
+
 #[tauri::command]
 async fn process_video_queue(
     app: tauri::AppHandle,
@@ -98,7 +105,8 @@ async fn process_video_queue(
             }
         }
 
-        let mut child = Command::new("ffmpeg")
+        //let mut child = Command::new("ffmpeg")
+        let mut child = get_ffmepg_command("ffmpeg")
             .arg("-i").arg(&item.path)
             .arg("-progress").arg("pipe:1")
             .arg("-r").arg("60")
@@ -197,7 +205,8 @@ async fn process_video_queue(
 
 
 fn get_video_duration(input_path: &PathBuf) -> Result<f64, String> {
-    let output = Command::new("ffprobe")
+    //let output = Command::new("ffprobe")
+    let output = get_ffmepg_command("ffprobe")
         .arg("-v").arg("error")
         .arg("-show_entries").arg("format=duration")
         .arg("-of").arg("default=noprint_wrappers=1:nokey=1")
@@ -216,7 +225,8 @@ fn get_video_duration(input_path: &PathBuf) -> Result<f64, String> {
 #[tauri::command]
 fn get_video_fps(path: String) -> Result<f64, String> {
 
-    let output = Command::new("ffprobe")
+    //let output = Command::new("ffprobe")
+    let output = get_ffmepg_command("ffprobe")
         .args([
             "-v", "error",
             "-select_streams", "v:0",
